@@ -3,17 +3,22 @@
 #include "Dpr/UI/PoketchAppBase.hpp"
 #include "Dpr/UI/PoketchButton.hpp"
 #include "Dpr/UI/PoketchWindow.hpp"
+#include "Dpr/UI/UIInputButton.hpp"
 #include "UnityEngine/GameObject.hpp"
 #include "UnityEngine/Transform.hpp"
 #include "UnityEngine/Events/UnityAction.hpp"
 #include "logger.hpp"
 #include "System/Type.hpp"
 #include "util.hpp"
+#include "GameController.hpp"
 
 UnityEngine::Events::UnityAction *backButtonAction = nullptr;
 Dpr::UI::PoketchButton *backButton = nullptr;
 Dpr::UI::PoketchButton *changeButton = nullptr;
 int count = 0;
+
+Dpr::UI::UIInputButton *buttonSL = nullptr;
+UnityEngine::Events::UnityAction_int__UIInputButton_State *buttonSLAction = nullptr;
 
 // Function called when back button is pressed
 void goToPreviousPoketchApp(Dpr::UI::PoketchWindow *__this, MethodInfo *method) {
@@ -123,4 +128,47 @@ Dpr::UI::PoketchButton** poketchButtonCheckIfFinal(Dpr::UI::PoketchAppBase *app)
 		// Return null to check app buttons
 		return nullptr;
 	}
+}
+
+
+// Stick L UI Button Creation
+
+// PoketchWindow.ctor
+void poketchBackButtonStickLeftConstructorHook(Dpr::UI::UIInputButton *buttonSR, MethodInfo *method) {
+	// Create our new button
+	buttonSL = (Dpr::UI::UIInputButton *)il2cpp_object_new(Dpr::UI::UIInputButton_TypeInfo);
+	buttonSL->ctor(nullptr);
+	il2cpp_object_init(&buttonSL,buttonSL);
+
+	// Create the original button
+	buttonSR->ctor(method);
+}
+
+// PoketchWindow.OnCreate
+void poketchBackButtonStickLeftUnityActionHook(UnityEngine::Events::UnityAction_int__UIInputButton_State *buttonSRAction, Il2CppObject *target, MethodInfo *method) {
+	// Setup new Action
+	MethodInfo *buttonSLMethodInfo = copyMethodInfo(method, (Il2CppMethodPointer) &goToPreviousPoketchApp);
+	buttonSLAction = (UnityEngine::Events::UnityAction_int__UIInputButton_State*) il2cpp_object_new(UnityEngine::Events::UnityAction_int__UIInputButton_State_TypeInfo);
+	buttonSLAction->ctor(target, buttonSLMethodInfo);
+
+	// Settup original Action
+	buttonSRAction->ctor(target, method);
+}
+
+// PoketchWindow.OnCreate
+void poketchBackButtonStickLeftButtonSetupHook(Dpr::UI::UIInputButton *buttonSR, int32_t button, UnityEngine::Events::UnityAction_int__UIInputButton_State *onCallbacked, Dpr::UI::UIInputController *input, bool isAutoUpdate, float longPressTime, MethodInfo *method) {
+	// Setup new Button
+	buttonSL->Setup((int32_t) GameController_Button::L_Stick, buttonSLAction, input, isAutoUpdate, longPressTime, nullptr);
+
+	// Setup original Button
+	buttonSR->Setup(button, onCallbacked, input, isAutoUpdate, longPressTime, method);
+}
+
+// PoketchWindow.OnUpdate
+void poketchBackButtonStickLeftButtonOnUpdateHook(Dpr::UI::UIInputButton *buttonSR, float deltaTime, MethodInfo *method) {
+	// Update the new Button
+	buttonSL->OnUpdate(deltaTime, nullptr);
+
+	// Update Original Buton
+	buttonSR->OnUpdate(deltaTime, method);
 }

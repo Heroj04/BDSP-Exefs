@@ -42,3 +42,17 @@
 	mov x8,x0
 	cmp x8, xzr
 	b.ne 0x01e67d1c
+
+
+// Left Stick Back Button
+01e696d0:
+	bl poketchBackButtonStickLeftConstructorHook
+
+01e66afc:
+	bl poketchBackButtonStickLeftUnityActionHook
+
+01e66b1c:
+	bl poketchBackButtonStickLeftButtonSetupHook
+
+01e677cc:
+	bl poketchBackButtonStickLeftButtonOnUpdateHook
