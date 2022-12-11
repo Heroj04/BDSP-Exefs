@@ -26,10 +26,14 @@
 	b.gt 0x01e6819c
 
 // Set the internal loop counter to 0
+// Dpr.UI.PoketchWindow$$OnUpdate
+// mov x27,xzr
 01e67be8:
 	bl poketchButtonCheckLoopSetCount
 
 // Increment the internal loop counter
+// Dpr.UI.PoketchWindow$$OnUpdate
+// add x27,x27,#0x1
 01e67c20:
 	bl poketchButtonCheckLoopAddCountOne
 
@@ -45,14 +49,23 @@
 
 
 // Left Stick Back Button
+
+// Initialise UIInputButton
+// Dpr.UI.PoketchWindow$$ctor
 01e696d0:
 	bl poketchBackButtonStickLeftConstructorHook
 
+// Create Unity Action for Button Press
+// Dpr.UI.PoketchWindow$$OnCreate
 01e66afc:
 	bl poketchBackButtonStickLeftUnityActionHook
 
+// Setup button with UnityAction
+// Dpr.UI.PoketchWindow$$OnCreate
 01e66b1c:
 	bl poketchBackButtonStickLeftButtonSetupHook
 
+// Update Button
+// Dpr.UI.PoketchWindow$$OnUpdate
 01e677cc:
 	bl poketchBackButtonStickLeftButtonOnUpdateHook
